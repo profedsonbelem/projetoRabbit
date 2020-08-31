@@ -1,0 +1,17 @@
+total 260
+-rw-rw-r--   1 aluno aluno   6848 ago  7 15:56 Contrato.js
+-rw-r--r--   1 aluno aluno    240 ago  7 15:57 DB.js
+drwxrwxr-x   2 aluno aluno   4096 ago  9 03:22 dist
+drwxrwxr-x 443 aluno aluno  20480 ago  9 03:22 node_modules
+-rw-rw-r--   1 aluno aluno      0 ago  9 03:55 ola.txt
+-rw-rw-r--   1 aluno aluno    766 ago  9 03:05 package.json
+-rw-rw-r--   1 aluno aluno 168765 ago  9 03:05 package-lock.json
+-rw-rw-r--   1 aluno aluno    248 jul 31 18:38 Para rabbitmq.txt
+-rw-rw-r--   1 aluno aluno    934 jul 31 11:45 queue.js
+-rw-r--r--   1 aluno aluno    930 ago  7 16:47 readme2.md
+-rw-rw-r--   1 aluno aluno   2462 ago  5 16:25 readme.md
+-rw-rw-r--   1 aluno aluno   4616 ago  5 16:44 send.js
+-rw-rw-r--   1 aluno aluno   1254 ago  9 03:00 server.js
+drwxrwxr-x   2 aluno aluno   4096 ago  9 03:22 src
+-rw-rw-r--   1 aluno aluno  12647 ago  7 17:39 swagger.json
+-rw-rw-r--   1 aluno aluno   3739 ago  9 03:12 worker.js
