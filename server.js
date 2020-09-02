@@ -8,6 +8,7 @@ const swaggerDocument = require('./swagger.json');
 require('./utils/redis')
 const cors = require("cors");
 const User = require("./controller/user");
+const obj = require("./worker");
 var app = express();
 
 
@@ -69,6 +70,12 @@ var getFindByIDContrato = function (req, res, next) {
 	})
 };
 
+var getRabbitMQ = function (req, res, next) {
+	let teste = obj
+	console.log('obj',obj.decrypted)
+		res.json({teste});
+};
+
 
 
 router.route('/contratos')
@@ -83,6 +90,10 @@ router.route('/api/InterfacedoCliente/Gravar')
 
 router.route('/api/InterfacedoCliente')
 	.get(User.find);
+
+router.route('/getRabbit')
+	.get(getRabbitMQ)
+
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/v1', router);

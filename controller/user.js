@@ -107,6 +107,7 @@ module.exports = {
         let Password = AutheticationToken.Password
         let EnvironmentName = AutheticationToken.EnvironmentName
 
+        
         Data.InterfacedoCliente.map(inter => {
             SequenciadoRegistro = inter.SequenciadoRegistro
             Codigo = inter.Codigo
@@ -371,7 +372,7 @@ module.exports = {
 
     find: async (req, res) => {
         const user = await User.find().cache({ expire: 10 });
-        
+
         res.json(user);
     }
 

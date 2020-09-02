@@ -27,7 +27,7 @@
 		"application/json"
 	],
 	"paths": {
-		"/contratos": {
+		"/contratos_beneficiarios": {
 			"post": {
 				"tags": [
 					"contratos"
@@ -70,7 +70,7 @@
 				}
 			}
 		},
-		"/contrato/{contratoId}": {
+		"/contratos_beneficiarios/{contratoId}": {
 			"parameters": [
 				{
 					"name": "contratoId",
@@ -128,6 +128,44 @@
 						"description": "contrato is updated",
 						"schema": {
 							"$ref": "#/definitions/contrato"
+						}
+					}
+				}
+			}
+		},
+		"/contratos_beneficiarios/{contratoId}/cobrancas": {
+			"parameters": [
+				{
+					"name": "contratoId",
+					"in": "path",
+					"required": true,
+					"description": "ID of contratos that we want to find",
+					"type": "string"
+				}
+			],
+			"post": {
+				"tags": [
+					"contratos"
+				],
+				"description": "Create new contratos in system",
+				"parameters": [
+					{
+						"name": "contratos",
+						"in": "body",
+						"description": "contratos that we want to create",
+						"schema": {
+							"$ref": "#/definitions/contratos"
+						}
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "New contrato is created",
+						"schema": {
+							"$ref": "#/definitions/contratos"
 						}
 					}
 				}
