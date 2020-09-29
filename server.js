@@ -51,6 +51,7 @@ const handleSucess = (res, msg) => {
 var createContrato = function (req, res, next) {
 
 	let cliente = req.body;
+	console.log('cliente: ', cliente)
 	let dataNascimento = moment(cliente.titular.dataNascimento).format('DD/MM/YYYY')
 	var contrato = new Contrato(req.body);
 
@@ -180,6 +181,7 @@ var createContrato = function (req, res, next) {
 					]
 				}
 			}).then(resp => {
+				axios.post('http://localhost:4006/titular', { email: cliente.titular.email });
 				res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
 			})
 		}
