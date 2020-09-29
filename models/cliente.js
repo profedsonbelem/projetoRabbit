@@ -1,9 +1,9 @@
 const Clientes = [
     {
         AutheticationToken: {
-            Username: "USUARIO_INTEGRACOES",
-            Password: "MXM123",
-            EnvironmentName: "MXM"
+            Username: "TESTEAPI.QUA",
+            Password: "TST90",
+            EnvironmentName: "QUALIVIDAPROJ"
         },
     },
 ]

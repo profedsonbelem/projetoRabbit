@@ -9,7 +9,7 @@
 			"url": "https://opensource.org/licenses/MIT"
 		}
 	},
-	"host": "http://localhost:3000",
+	"host": "localhost:3000",
 	"basePath": "/api/v1",
 	"tags": [
 		{
@@ -27,7 +27,7 @@
 		"application/json"
 	],
 	"paths": {
-		"/contratos_beneficiarios": {
+		"/contrato_beneficiario": {
 			"post": {
 				"tags": [
 					"contratos"
@@ -70,7 +70,7 @@
 				}
 			}
 		},
-		"/contratos_beneficiarios/{contratoId}": {
+		"/contrato_beneficiario/{contratoId}": {
 			"parameters": [
 				{
 					"name": "contratoId",
@@ -133,7 +133,7 @@
 				}
 			}
 		},
-		"/contratos_beneficiarios/{contratoId}/cobrancas": {
+		"/contrato_beneficiario/{contratoId}/cobrancas": {
 			"parameters": [
 				{
 					"name": "contratoId",

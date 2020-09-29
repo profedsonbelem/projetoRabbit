@@ -8,11 +8,12 @@ const client = new MongoClient(url);
 const queue = require("./queue");
 const CryptoJS = require('crypto-js');
 var app = express();
-let obj = {}
+var fs = require('fs')
 
 amqp.connect('amqp://hadministradora:h4Dm1n44@10.190.4.17', function (err, conn) {
     conn.createChannel(function (err, ch) {
-        var q = 'Roots.HAdministradora.PosVenda.CadastroContratoBeneficiario';
+        // var q = 'Roots.HAdministradora.PosVenda.CadastroContratoBeneficiario';
+        var q = 'FilaTeste'
         ch.assertQueue(q, { durable: false });
         ch.prefetch(1);
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q);
@@ -56,7 +57,7 @@ amqp.connect('amqp://hadministradora:h4Dm1n44@10.190.4.17', function (err, conn)
             // res.status(200).send({ "Decriptografou": decrypted.toString(CryptoJS.enc.Utf8) });
 
 
-            //
+            
             console.log(" Recebido e decriptografado ", decrypted.toString(CryptoJS.enc.Utf8));
             MongoClient.connect(url, function (err, database) {
                 if (err) {
@@ -65,18 +66,9 @@ amqp.connect('amqp://hadministradora:h4Dm1n44@10.190.4.17', function (err, conn)
                     var db = database.db("marlin01");
                     var collection = db.collection("mensage");
                     console.log(msg.content.toString());
-                    collection.insertMany([{ conteudos_beneficiarios: JSON.parse(decrypted.toString(CryptoJS.enc.Utf8)) }], function (err, documents) {
+                    collection.insertMany([JSON.parse(decrypted.toString(CryptoJS.enc.Utf8))], function (err, documents) {
                         console.log({ error: err, affected: documents });
                     });
-
-                    // var db2 = database.db("marlin01");
-                    // var collection = db2.collection("mensage");
-
-                    // collection.find().forEach( function(x){db.contratos.insert(x)} );
-                    collection.find().forEach(x => { collection.insertOne(x) });
-
-
-
                 }
                 database.close();
             });
@@ -87,5 +79,4 @@ amqp.connect('amqp://hadministradora:h4Dm1n44@10.190.4.17', function (err, conn)
 });
 
 
-module.exports= obj;
 

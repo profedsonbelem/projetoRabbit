@@ -1,0 +1,1 @@
+robot -d ./LOGS -L trace ./E2E/  
