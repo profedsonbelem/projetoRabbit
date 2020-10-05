@@ -13,7 +13,8 @@ const https = require('https');
 const fs = require('fs');
 const { credentials } = require("amqplib/callback_api");
 const axios = require('axios');
-const moment = require('moment')
+const moment = require('moment');
+const { string } = require("joi");
 var CronJob = require('cron').CronJob;
 
 
@@ -24,6 +25,8 @@ var CronJob = require('cron').CronJob;
 // 	key: fs.readFileSync('key.pem'),
 // 	cert: fs.readFileSync('cert.pem')
 // };
+
+
 
 app.use(cors())
 app.use(bodyParser.urlencoded({
@@ -51,7 +54,6 @@ const handleSucess = (res, msg) => {
 var createContrato = function (req, res, next) {
 
 	let cliente = req.body;
-	console.log('cliente: ', cliente)
 	let dataNascimento = moment(cliente.titular.dataNascimento).format('DD/MM/YYYY')
 	var contrato = new Contrato(req.body);
 
@@ -127,7 +129,7 @@ var createContrato = function (req, res, next) {
 									SequenciaClienteEndereco: "1",
 									CodigoEnderecoAlternativo: "A01",
 									DescricaoEnderecoAlternativo: "Endereço de cobrança",
-									NomeCliente: "Teste Belem",
+									NomeCliente: cliente.titular.nome,
 									EnderecoAlernativo: "",
 									Numero: "",
 									Complemento: "",
@@ -181,21 +183,108 @@ var createContrato = function (req, res, next) {
 					]
 				}
 			}).then(resp => {
-				axios.post('http://localhost:4006/titular', { email: cliente.titular.email });
 				res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
 			})
 		}
 	});
 };
 
+function retornaCampo(status, CampoSelecionado) {
+	let statusConvertido = parseInt(status)
+
+	switch (statusConvertido) {
+
+		case 1:
+			let administradora
+			if (CampoSelecionado)
+				administradora = { "administradora.razaoSocial": CampoSelecionado }
+
+			else
+				administradora = {}
+
+			return administradora;
+			break
+		case 2:
+			let operadora
+			if (CampoSelecionado)
+				operadora = { "operadora.nome": CampoSelecionado }
+
+			else
+				operadora = {}
+
+			return operadora;
+			break;
+		case 3:
+
+			let dataNascimento
+			if (CampoSelecionado)
+				dataNascimento = { "titular.dataNascimento": CampoSelecionado }
+
+			else
+				dataNascimento = {}
+
+			return dataNascimento;
+			break;
+		case 4:
+			let nomeTitular
+			if (CampoSelecionado)
+				nomeTitular = { "titular.nome": CampoSelecionado }
+
+
+			else
+				nomeTitular = {}
+
+			return nomeTitular;
+			break;
+
+		case 5:
+			let entidade
+			if (CampoSelecionado)
+				entidade = { "entidade.nome": CampoSelecionado }
+
+			else
+				entidade = {}
+
+			return entidade;
+			break;
+
+	}
+}
+
 var getFindContrato = function (req, res, next) {
-	Contrato.find(function (err, contratos) {
-		if (err) {
-			next(err);
-		} else {
-			res.json(contratos);
-		}
-	});
+	let administradora = req.query.administradora;
+	let operadora = req.query.operadora;
+	let dataNascimento = req.query.dataNascimento;
+	let nomeTitular = req.query.nomeTitular;
+	let entidade = req.query.entidade;
+
+	let statusAdministradora = req.query.statusAdministradora;
+	let statusOperadora = req.query.statusOperadora;
+	let statusDataNascimento = req.query.statusDataNascimento;
+	let statusNomeTitular = req.query.statusNomeTitular;
+	let statusEntidade = req.query.statusEntidade;
+
+
+	let primeiro = retornaCampo(statusAdministradora, administradora);
+	let segundo = retornaCampo(statusOperadora, operadora)
+	let terceiro = retornaCampo(statusDataNascimento, dataNascimento);
+	let quarto = retornaCampo(statusNomeTitular, nomeTitular)
+	let quinto = retornaCampo(statusEntidade, entidade);
+
+
+	if (administradora || operadora || dataNascimento || nomeTitular || entidade) {
+		Contrato.find({ $and: [primeiro, segundo, terceiro, quarto, quinto] }).then(resp => {
+			res.json(resp);
+		})
+	} else {
+		Contrato.find(function (err, contratos) {
+			if (err) {
+				next(err);
+			} else {
+				res.json(contratos);
+			}
+		});
+	}
 };
 
 var getFindByIDContrato = function (req, res, next) {
@@ -316,36 +405,61 @@ var postContratoCobranca = function (req, res, next) {
 
 var getTitulo = function (req, res, next) {
 
+	let cliente = req.params.id
 	Contrato.find().then(data => {
+		// let job = new CronJob('00 57 11 29 * *', function () {
+		axios.post('https://prjqualivida.mxmwebmanager.com.br/api/InterfacedoContasPagarReceber/ConsultaTituloReceber', {
 
-		let job = new CronJob('00 57 11 29 * *', function () {
-			axios.post('https://prjqualivida.mxmwebmanager.com.br/api/InterfacedoContasPagarReceber/ConsultaTituloReceber', {
-
-				AutheticationToken: {
-					Username: "TESTEAPI.QUA",
-					Password: "TST90",
-					EnvironmentName: "QUALIVIDAPROJ"
-				},
-				Data: {
-					Cliente: '20050',
-					NumeroTitulo: "",
-					DocumentoFiscal: "",
-					CodigoSRF: "",
-					CodigoCondicaoPagamento: "",
-					CodigoTipoTitulo: "",
-					CodigoTituloCobranca: "",
-					EmpresaEmitente: "",
-					CodigoFilial: "",
-					CodigoEmpresaPagadora: "",
-					SqProcesso: ""
-				}
-			}).then(resp => {
-				res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
-			})
-		}, null, true, 'America/Sao_Paulo');
-		job.start();
+			AutheticationToken: {
+				Username: "TESTEAPI.QUA",
+				Password: "TST90",
+				EnvironmentName: "QUALIVIDAPROJ"
+			},
+			Data: {
+				Cliente: cliente,
+				NumeroTitulo: "",
+				DocumentoFiscal: "",
+				CodigoSRF: "",
+				CodigoCondicaoPagamento: "",
+				CodigoTipoTitulo: "",
+				CodigoTituloCobranca: "",
+				EmpresaEmitente: "",
+				CodigoFilial: "",
+				CodigoEmpresaPagadora: "",
+				SqProcesso: ""
+			}
+		}).then(resp => {
+			res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
+		})
+		// }, null, true, 'America/Sao_Paulo');
+		// job.start();
 	})
 };
+
+var getCarteirinha = function (req, res, next) {
+	let carteirinha = parseInt(req.params.carteirinha)
+
+	Contrato.findOne({ $and: [{ "titular.numeroCarteirinha": carteirinha }] }).then(resp => {
+		res.json(resp);
+	})
+};
+
+var getCPF = function (req, res, next) {
+	let cpf = req.params.cpf
+	Contrato.findOne({ $and: [{ "titular.cpf": cpf }] }).then(resp => {
+		res.json(resp);
+	})
+};
+
+var getProposta = function (req, res, next) {
+	let proposta = req.params.proposta
+
+	Contrato.findOne({ "numeroProposta": proposta }).then(data => {
+		res.json(data);
+	})
+};
+
+
 
 
 
@@ -360,8 +474,19 @@ router.route('/contrato_beneficiario/:id/cobrancas')
 	.post(postContratoCobranca);
 
 
-router.route('/titulos')
+router.route('/contrato_beneficiario/:id/titulos')
 	.get(getTitulo);
+
+router.route('/contrato_beneficiario/:cpf/cpf')
+	.get(getCPF);
+
+router.route('/contrato_beneficiario/:proposta/proposta')
+	.get(getProposta);
+
+
+router.route('/contrato_beneficiario/:carteirinha/carteirinha')
+	.get(getCarteirinha);
+
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/v1', router);

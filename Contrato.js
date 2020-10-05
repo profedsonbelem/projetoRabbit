@@ -160,7 +160,7 @@ const schema = mongoose.Schema({
         "type": "String"
       },
       "dataNascimento": {
-        "type": "Date"
+        "type": "Mixed"
       },
       "nomeMae": {
         "type": "String"

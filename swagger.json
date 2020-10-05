@@ -59,6 +59,43 @@
 				"tags": [
 					"contratos"
 				],
+				"parameters": [
+					{
+						"name": "administradora",
+						"in": "path",
+						"required": false,
+						"description": "administradora",
+						"type": "string"
+					},
+					{
+						"name": "operadora",
+						"in": "path",
+						"required": false,
+						"description": "operadora",
+						"type": "string"
+					},
+					{
+						"name": "dataNascimento",
+						"in": "path",
+						"required": false,
+						"description": "dataNascimento",
+						"type": "string"
+					},
+					{
+						"name": "nomeTitular",
+						"in": "path",
+						"required": false,
+						"description": "nomeTitular",
+						"type": "string"
+					},
+					{
+						"name": "entidade",
+						"in": "path",
+						"required": false,
+						"description": "entidade",
+						"type": "string"
+					}
+				],
 				"summary": "Get all contratos in system",
 				"responses": {
 					"200": {
@@ -170,7 +207,108 @@
 					}
 				}
 			}
+		},
+		"/contrato_beneficiario/{numeroCliente}/titulos": {
+			"parameters": [
+				{
+					"name": "contratoId",
+					"in": "path",
+					"required": true,
+					"description": "ID of contratos that we want to find",
+					"type": "string"
+				}
+			],
+			"get": {
+				"tags": [
+					"contratos"
+				],
+				"summary": "Get contrato with given ID",
+				"responses": {
+					"200": {
+						"description": "Contrato is found",
+						"schema": {
+							"$ref": "#/definitions/contrato"
+						}
+					}
+				}
+			}
+		},
+		"/contrato_beneficiario/{carteirinha}/carteirinha": {
+			"parameters": [
+				{
+					"name": "carteirinha",
+					"in": "path",
+					"required": true,
+					"description": "Numero da Carteirinha",
+					"type": "string"
+				}
+			],
+			"get": {
+				"tags": [
+					"contratos"
+				],
+				"summary": "Get contrato with given ID",
+				"responses": {
+					"200": {
+						"description": "Contrato is found",
+						"schema": {
+							"$ref": "#/definitions/contrato"
+						}
+					}
+				}
+			}
+		},
+		"/contrato_beneficiario/{proposta}/proposta": {
+			"parameters": [
+				{
+					"name": "proposta",
+					"in": "path",
+					"required": true,
+					"description": "Numero Proposta",
+					"type": "string"
+				}
+			],
+			"get": {
+				"tags": [
+					"contratos"
+				],
+				"summary": "Get contrato with given ID",
+				"responses": {
+					"200": {
+						"description": "Contrato is found",
+						"schema": {
+							"$ref": "#/definitions/contrato"
+						}
+					}
+				}
+			}
+		},
+		"/contrato_beneficiario/{cpf}/cpf": {
+			"parameters": [
+				{
+					"name": "cpf",
+					"in": "path",
+					"required": true,
+					"description": "Numero do CPF",
+					"type": "string"
+				}
+			],
+			"get": {
+				"tags": [
+					"contratos"
+				],
+				"summary": "Get contrato with given ID",
+				"responses": {
+					"200": {
+						"description": "Contrato is found",
+						"schema": {
+							"$ref": "#/definitions/contrato"
+						}
+					}
+				}
+			}
 		}
+		
 	},
 	"definitions": {
 		"contratos": {
