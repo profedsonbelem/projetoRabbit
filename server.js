@@ -230,7 +230,6 @@ function retornaCampo(status, CampoSelecionado) {
 			if (CampoSelecionado)
 				nomeTitular = { "titular.nome": CampoSelecionado }
 
-
 			else
 				nomeTitular = {}
 
@@ -248,6 +247,10 @@ function retornaCampo(status, CampoSelecionado) {
 			return entidade;
 			break;
 
+		default:
+			return {}
+
+			break;
 	}
 }
 
@@ -258,21 +261,14 @@ var getFindContrato = function (req, res, next) {
 	let nomeTitular = req.query.nomeTitular;
 	let entidade = req.query.entidade;
 
-	let statusAdministradora = req.query.statusAdministradora;
-	let statusOperadora = req.query.statusOperadora;
-	let statusDataNascimento = req.query.statusDataNascimento;
-	let statusNomeTitular = req.query.statusNomeTitular;
-	let statusEntidade = req.query.statusEntidade;
-
-
-	let primeiro = retornaCampo(statusAdministradora, administradora);
-	let segundo = retornaCampo(statusOperadora, operadora)
-	let terceiro = retornaCampo(statusDataNascimento, dataNascimento);
-	let quarto = retornaCampo(statusNomeTitular, nomeTitular)
-	let quinto = retornaCampo(statusEntidade, entidade);
-
-
 	if (administradora || operadora || dataNascimento || nomeTitular || entidade) {
+
+		let primeiro = retornaCampo(1, administradora);
+		let segundo = retornaCampo(2, operadora)
+		let terceiro = retornaCampo(3, dataNascimento);
+		let quarto = retornaCampo(4, nomeTitular)
+		let quinto = retornaCampo(5, entidade);
+
 		Contrato.find({ $and: [primeiro, segundo, terceiro, quarto, quinto] }).then(resp => {
 			res.json(resp);
 		})
