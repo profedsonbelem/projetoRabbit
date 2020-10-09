@@ -1,6 +1,6 @@
 const express = require("express");
-require("./DB");
-const Contrato = require('./Contrato');
+require("./db/DB");
+const Contrato = require('./db/Contrato');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const swaggerUi = require('swagger-ui-express');
@@ -8,13 +8,14 @@ const swaggerDocument = require('./swagger.json');
 // require('./utils/redis')
 const cors = require("cors");
 var app = express();
-const ICliente = require('./entity/InterfacedoCliente');
+const ICliente = require('./src/model/InterfacedoCliente');
 const https = require('https');
 const fs = require('fs');
 const { credentials } = require("amqplib/callback_api");
 const axios = require('axios');
 const moment = require('moment');
 const { string } = require("joi");
+const Utils = require("./utils/utils");
 var CronJob = require('cron').CronJob;
 
 
@@ -49,14 +50,12 @@ const handleSucess = (res, msg) => {
 	};
 };
 
-
-
 var createContrato = function (req, res, next) {
 
 	let cliente = req.body;
 	let dataNascimento = moment(cliente.titular.dataNascimento).format('DD/MM/YYYY')
 	let contrato = new Contrato(req.body);
-	
+
 
 	contrato.save(async function (err) {
 
@@ -190,71 +189,6 @@ var createContrato = function (req, res, next) {
 	});
 };
 
-function retornaCampo(status, CampoSelecionado) {
-	let statusConvertido = parseInt(status)
-
-	switch (statusConvertido) {
-
-		case 1:
-			let administradora
-			if (CampoSelecionado)
-				administradora = { "administradora.razaoSocial": CampoSelecionado }
-
-			else
-				administradora = {}
-
-			return administradora;
-			break
-		case 2:
-			let operadora
-			if (CampoSelecionado)
-				operadora = { "operadora.nome": CampoSelecionado }
-
-			else
-				operadora = {}
-
-			return operadora;
-			break;
-		case 3:
-
-			let dataNascimento
-			if (CampoSelecionado)
-				dataNascimento = { "titular.dataNascimento": CampoSelecionado }
-
-			else
-				dataNascimento = {}
-
-			return dataNascimento;
-			break;
-		case 4:
-			let nomeTitular
-			if (CampoSelecionado)
-				nomeTitular = { "titular.nome": CampoSelecionado }
-
-			else
-				nomeTitular = {}
-
-			return nomeTitular;
-			break;
-
-		case 5:
-			let entidade
-			if (CampoSelecionado)
-				entidade = { "entidade.sigla": CampoSelecionado }
-
-			else
-				entidade = {}
-
-			return entidade;
-			break;
-
-		default:
-			return {}
-
-			break;
-	}
-}
-
 var getFindContrato = function (req, res, next) {
 	let administradora = req.query.administradora;
 	let operadora = req.query.operadora;
@@ -262,25 +196,19 @@ var getFindContrato = function (req, res, next) {
 	let nomeTitular = req.query.nomeTitular;
 	let entidade = req.query.entidade;
 	let skip = req.query.skip;
-	// let dataNascimentoFormat = moment(dataNascimento).format('')
-
-	// let cliente = new ICliente() 
-	// console.log('iCliente: ', cliente )
-	// console.log('dataNascimento: ', dataNascimentoFormat)
-
 
 	if (administradora || operadora || dataNascimento || nomeTitular || entidade) {
+		
+		let primeiro = Utils.retornaCampo(1, administradora);
+		let segundo = Utils.retornaCampo(2, operadora)
+		let terceiro = Utils.retornaCampo(3, dataNascimento);
+		let quarto = Utils.retornaCampo(4, nomeTitular)
+		let quinto = Utils.retornaCampo(5, entidade);
 
-		let primeiro = retornaCampo(1, administradora);
-		let segundo = retornaCampo(2, operadora)
-		let terceiro = retornaCampo(3, dataNascimento);
-		let quarto = retornaCampo(4, nomeTitular)
-		let quinto = retornaCampo(5, entidade);
-
-		Contrato.find({ $and: [primeiro, segundo, terceiro, quarto, quinto] }).skip(1).limit(1)
-		.then(resp => {
-			res.json(resp);
-		})
+		Contrato.find({ $and: [primeiro, segundo, terceiro, quarto, quinto] }).skip(1).limit(0)
+			.then(resp => {
+				res.json(resp);
+			})
 	} else {
 		Contrato.find(function (err, contratos) {
 			if (err) {
@@ -288,7 +216,7 @@ var getFindContrato = function (req, res, next) {
 			} else {
 				res.json(contratos);
 			}
-		}).skip(parseInt(skip)).limit(1);
+		}).skip(parseInt(skip)).limit(2);
 	}
 };
 

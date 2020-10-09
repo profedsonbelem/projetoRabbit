@@ -12,10 +12,10 @@ const schema = mongoose.Schema({
       "type": "Number"
     }
   },
-  "dataVigencia": {
+  dataVigencia: {
     "type": "Date"
   },
-  "dataVencimento": {
+  dataVencimento: {
     "type": "Date"
   },
   "operadora": {
@@ -379,6 +379,8 @@ const schema = mongoose.Schema({
 
 schema.pre('save', function (next) {
   this.titular.dataNascimento = moment().format('YYYY-MM-DD');
+  this.dataVigencia = moment().format('YYYY-MM-DD');
+  this.dataVencimento  = moment().format('YYYY-MM-DD'); 
   next();
 
 })
