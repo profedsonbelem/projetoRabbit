@@ -13,10 +13,10 @@ const schema = mongoose.Schema({
     }
   },
   dataVigencia: {
-    "type": "Date"
+    "type": "Mixed"
   },
   dataVencimento: {
-    "type": "Date"
+    "type": "Mixed"
   },
   "operadora": {
     "id": {
@@ -225,7 +225,7 @@ const schema = mongoose.Schema({
         "type": "String"
       },
       "numero": {
-        "type": "Date"
+        "type": "Mixed"
       },
       "complemento": {
         "type": "String"
@@ -381,6 +381,8 @@ schema.pre('save', function (next) {
   this.titular.dataNascimento = moment().format('YYYY-MM-DD');
   this.dataVigencia = moment().format('YYYY-MM-DD');
   this.dataVencimento  = moment().format('YYYY-MM-DD'); 
+
+  console.log('this.dataVigencia: ',this.dataVigencia)
   next();
 
 })

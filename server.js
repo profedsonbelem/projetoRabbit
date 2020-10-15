@@ -8,25 +8,11 @@ const swaggerDocument = require('./swagger.json');
 // require('./utils/redis')
 const cors = require("cors");
 var app = express();
-const ICliente = require('./src/model/InterfacedoCliente');
-const https = require('https');
-const fs = require('fs');
 const { credentials } = require("amqplib/callback_api");
 const axios = require('axios');
 const moment = require('moment');
-const { string } = require("joi");
 const Utils = require("./utils/utils");
 var CronJob = require('cron').CronJob;
-
-
-
-
-
-// const options = {
-// 	key: fs.readFileSync('key.pem'),
-// 	cert: fs.readFileSync('cert.pem')
-// };
-
 
 
 app.use(cors())
@@ -57,134 +43,136 @@ var createContrato = function (req, res, next) {
 	let contrato = new Contrato(req.body);
 
 
-	contrato.save(async function (err) {
+	contrato.save(async function (err, contrato) {
 
 		if (err) {
 			next(err);
 		} else {
-			// await axios.post('https://prjqualivida.mxmwebmanager.com.br/api/InterfacedoCliente/Gravar', {
-			// 	AutheticationToken: {
-			// 		Username: "TESTEAPI.QUA",
-			// 		Password: "TST90",
-			// 		EnvironmentName: "QUALIVIDAPROJ"
-			// 	},
-			// 	Data: {
-			// 		InterfacedoCliente: [
-			// 			{
-			// 				SequenciadoRegistro: 1,
-			// 				Codigo: cliente.titular.id,
-			// 				TipodePessoa: "F",
-			// 				Nome: cliente.titular.nome,
-			// 				CPFouCNPJ: cliente.titular.cpf,
-			// 				NomeFantansia: "",
-			// 				TipodoLocaldoIndicadordeInscricaoEstadual: "9",
-			// 				Inscricao: "",
-			// 				InscricaoMunicipal: "",
-			// 				InscricaoSuframa: "",
-			// 				OrgaoExpeditor: "",
-			// 				DatadaExpedicao: "",
-			// 				DatadeNascimento: dataNascimento,
-			// 				CodigodaNacionalidade: "",
-			// 				EstadoCivil: cliente.titular.estadoCivil.descricao,
-			// 				Profissao: cliente.titular.profissao.descricao,
-			// 				CodigodoGrupo: "",
-			// 				CodigodoPais: "",
-			// 				Cep: cliente.titular.endereco.cep,
-			// 				Endereco: cliente.titular.endereco.logradouro,
-			// 				NumerodoEndereco: cliente.titular.endereco.numero,
-			// 				ComplementodoEndereco: cliente.titular.endereco.complemento,
-			// 				Bairro: cliente.titular.endereco.bairro,
-			// 				Uf: cliente.titular.endereco.uf,
-			// 				Cidade: cliente.titular.endereco.cidade,
-			// 				Email: cliente.titular.email,
-			// 				Telefone: cliente.titular.numCelular,
-			// 				CodigodaCidade: "3304557",
-			// 				Ativo: "A",
-			// 				DatadoCadastro: "",
-			// 				DatadeAtualizacao: "",
-			// 				DatadeInativacao: "",
-			// 				Pais: "Brasil",
-			// 				InterfaceContaCorrentedoCliente: [
-			// 					{
-			// 						SequenciadaConta: 1,
-			// 						CodigodoCliente: cliente.titular.id,
-			// 						CodigodaContaCorrente: "001",
-			// 						CodigodoBanco: "341",
-			// 						NomedoBanco: "",
-			// 						AgenciadoBanco: "0740",
-			// 						NomedaAgencia: "",
-			// 						EnderecodaAgencia: "",
-			// 						BairrodaAgencia: "",
-			// 						CidadedaAgencia: "",
-			// 						UFdaAgencia: "",
-			// 						CepdaAgencia: "",
-			// 						NumerodaContaBancaria: "62535-9",
-			// 						TipodeConta: "",
-			// 						Competencia: "",
-			// 						OperacaodeIntegracao: ""
-			// 					}
-			// 				],
-			// 				InterfaceEnderecodoCliente: [
-			// 					{
-			// 						SequenciaClienteEndereco: "1",
-			// 						CodigoEnderecoAlternativo: "A01",
-			// 						DescricaoEnderecoAlternativo: "Endereço de cobrança",
-			// 						NomeCliente: cliente.titular.nome,
-			// 						EnderecoAlernativo: "",
-			// 						Numero: "",
-			// 						Complemento: "",
-			// 						Bairro: "",
-			// 						Cidade: "",
-			// 						UF: "RJ",
-			// 						CEP: "",
-			// 						Telefone: "",
-			// 						CNPJ: "26782341859",
-			// 						InscricaoEstadual: "",
-			// 						CodigoRegiao: "",
-			// 						Email: "",
-			// 						InscricaoMunicipal: "",
-			// 						InscricaoSUFRAMA: "",
-			// 						CodigoCidadeIBGE: "",
-			// 						CodigoPaisIBGE: "",
-			// 						TipoLocalIndicadorInscricaoEstadual: "1",
-			// 						OperacaodeIntegracao: ""
-			// 					}
-			// 				],
-			// 				InterfaceContabildoCliente: [
-			// 					{
-			// 						CodigoCliente: cliente.titular.id,
-			// 						CodigoEmpresa: "01",
-			// 						CodigoFilial: "",
-			// 						CodigoMoeda: "",
-			// 						NumeroContaContabil: "",
-			// 						NumeroContaContabilAntecipacao: "",
-			// 						OperacaodeIntegracao: "",
-			// 						InterfaceGrupoRecebimentodoCliente: [
-			// 							{
-			// 								CodigoCliente: cliente.titular.id,
-			// 								CodigoEmpresa: "01",
-			// 								CodigoFilial: "",
-			// 								CodigoMoeda: "",
-			// 								CodigoGrupoRecebimento: "310053",
-			// 								CodigoImpostoIRRF: "",
-			// 								CodigoImpostoINSS: "",
-			// 								CodigoImpostoISS: "",
-			// 								CodigoImpostoPIS: "",
-			// 								CodigoImpostoCOFINS: "",
-			// 								CodigoImpostoContribuicaoSocial: "",
-			// 								IndicadorGrupoPrincipal: "",
-			// 								IdentificadorTipoServico: "",
-			// 								CodigoAtividadeEconomica: ""
-			// 							}
-			// 						]
-			// 					}
-			// 				]
-			// 			}
-			// 		]
-			// 	}
-			// }).then(resp => {
-			// 	res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
-			// })
+			console.log('contrato', contrato)
+			await axios.post('https://prjqualivida.mxmwebmanager.com.br/api/InterfacedoCliente/Gravar', {
+				AutheticationToken: {
+					Username: "TESTEAPI.QUA",
+					Password: "TST90",
+					EnvironmentName: "QUALIVIDAPROJ"
+				},
+				Data: {
+					InterfacedoCliente: [
+						{
+							SequenciadoRegistro: 1,
+							Codigo: contrato.titular.id,
+							TipodePessoa: "F",
+							Nome: contrato.titular.nome,
+							CPFouCNPJ: contrato.titular.cpf,
+							NomeFantansia: "",
+							TipodoLocaldoIndicadordeInscricaoEstadual: "9",
+							Inscricao: "",
+							InscricaoMunicipal: "",
+							InscricaoSuframa: "",
+							OrgaoExpeditor: "",
+							DatadaExpedicao: "",
+							DatadeNascimento: dataNascimento,
+							CodigodaNacionalidade: "",
+							EstadoCivil: contrato.titular.estadoCivil.descricao,
+							Profissao: contrato.titular.profissao.descricao,
+							CodigodoGrupo: "",
+							CodigodoPais: "",
+							Cep: contrato.titular.endereco.cep,
+							Endereco: contrato.titular.endereco.logradouro,
+							NumerodoEndereco: contrato.titular.endereco.numero,
+							ComplementodoEndereco: contrato.titular.endereco.complemento,
+							Bairro: contrato.titular.endereco.bairro,
+							Uf: contrato.titular.endereco.uf,
+							Cidade: contrato.titular.endereco.cidade,
+							Email: contrato.titular.email,
+							Telefone: contrato.titular.numCelular,
+							CodigodaCidade: "3304557",
+							Ativo: "A",
+							DatadoCadastro: "",
+							DatadeAtualizacao: "",
+							DatadeInativacao: "",
+							Pais: "Brasil",
+							InterfaceContaCorrentedoCliente: [
+								{
+									SequenciadaConta: 1,
+									CodigodoCliente: contrato.titular.id,
+									CodigodaContaCorrente: "001",
+									CodigodoBanco: "341",
+									NomedoBanco: "",
+									AgenciadoBanco: "0740",
+									NomedaAgencia: "",
+									EnderecodaAgencia: "",
+									BairrodaAgencia: "",
+									CidadedaAgencia: "",
+									UFdaAgencia: "",
+									CepdaAgencia: "",
+									NumerodaContaBancaria: "62535-9",
+									TipodeConta: "",
+									Competencia: "",
+									OperacaodeIntegracao: ""
+								}
+							],
+							InterfaceEnderecodoCliente: [
+								{
+									SequenciaClienteEndereco: "1",
+									CodigoEnderecoAlternativo: "A01",
+									DescricaoEnderecoAlternativo: "Endereço de cobrança",
+									NomeCliente: contrato.titular.nome,
+									EnderecoAlernativo: "",
+									Numero: "",
+									Complemento: "",
+									Bairro: "",
+									Cidade: "",
+									UF: "RJ",
+									CEP: "",
+									Telefone: "",
+									CNPJ: "26782341859",
+									InscricaoEstadual: "",
+									CodigoRegiao: "",
+									Email: "",
+									InscricaoMunicipal: "",
+									InscricaoSUFRAMA: "",
+									CodigoCidadeIBGE: "",
+									CodigoPaisIBGE: "",
+									TipoLocalIndicadorInscricaoEstadual: "1",
+									OperacaodeIntegracao: ""
+								}
+							],
+							InterfaceContabildoCliente: [
+								{
+									CodigoCliente: contrato.titular.id,
+									CodigoEmpresa: "01",
+									CodigoFilial: "",
+									CodigoMoeda: "",
+									NumeroContaContabil: "",
+									NumeroContaContabilAntecipacao: "",
+									OperacaodeIntegracao: "",
+									InterfaceGrupoRecebimentodoCliente: [
+										{
+											CodigoCliente: contrato.titular.id,
+											CodigoEmpresa: "01",
+											CodigoFilial: "",
+											CodigoMoeda: "",
+											CodigoGrupoRecebimento: "310053",
+											CodigoImpostoIRRF: "",
+											CodigoImpostoINSS: "",
+											CodigoImpostoISS: "",
+											CodigoImpostoPIS: "",
+											CodigoImpostoCOFINS: "",
+											CodigoImpostoContribuicaoSocial: "",
+											IndicadorGrupoPrincipal: "",
+											IdentificadorTipoServico: "",
+											CodigoAtividadeEconomica: ""
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			}).then(resp => {
+				res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
+			})
+			// res.json(contrato);
 		}
 	});
 };
@@ -195,20 +183,27 @@ var getFindContrato = function (req, res, next) {
 	let dataNascimento = req.query.dataNascimento;
 	let nomeTitular = req.query.nomeTitular;
 	let entidade = req.query.entidade;
-	let skip = req.query.skip;
+	let skip = req.query.pagina;
+	let limit = req.query.tamanhoPagina;
+
+
 
 	if (administradora || operadora || dataNascimento || nomeTitular || entidade) {
-		
+
 		let primeiro = Utils.retornaCampo(1, administradora);
 		let segundo = Utils.retornaCampo(2, operadora)
 		let terceiro = Utils.retornaCampo(3, dataNascimento);
 		let quarto = Utils.retornaCampo(4, nomeTitular)
 		let quinto = Utils.retornaCampo(5, entidade);
 
-		Contrato.find({ $and: [primeiro, segundo, terceiro, quarto, quinto] }).skip(1).limit(0)
+		Contrato.find({ $and: [primeiro, segundo, terceiro, quarto, quinto] })
 			.then(resp => {
 				res.json(resp);
 			})
+	} else if (skip && limit) {
+		Contrato.find().then(resp => {
+			res.json(resp);
+		}).skip(skip).limit(limit)
 	} else {
 		Contrato.find(function (err, contratos) {
 			if (err) {
@@ -216,7 +211,7 @@ var getFindContrato = function (req, res, next) {
 			} else {
 				res.json(contratos);
 			}
-		}).skip(parseInt(skip)).limit(2);
+		})
 	}
 };
 
@@ -424,8 +419,7 @@ router.route('/contrato_beneficiario/:carteirinha/carteirinha')
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/v1', router);
 
-// https.createServer(options,app).listen(3000)
-app.listen(3000)
+app.listen(3001)
 module.exports = app;
 
 

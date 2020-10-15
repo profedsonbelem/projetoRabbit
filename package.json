@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "start-send": "node send.js",
-    "start-worker": "nodemon worker.js",
+    "start-send": "node utils/send.js",
+    "start-worker": "nodemon utils/worker.js",
     "test-api": "nyc --reporter=html --reporter=text mocha qa/api/specs/**/*.spec.js --timeout 30000 --reporter mochawesome",
     "test-for-all": "robot -d ./qa/testRabbit/LOGS -L trace ./qa/testRabbit && npm run test-api"
   },

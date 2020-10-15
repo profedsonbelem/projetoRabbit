@@ -12,8 +12,7 @@ var fs = require('fs')
 
 amqp.connect('amqp://hadministradora:h4Dm1n44@10.190.4.17', function (err, conn) {
     conn.createChannel(function (err, ch) {
-        // var q = 'Roots.HAdministradora.PosVenda.CadastroContratoBeneficiario';
-        var q = 'FilaTeste'
+        var q = 'Roots.HAdministradora.PosVenda.CadastroContratoBeneficiario';
         ch.assertQueue(q, { durable: false });
         ch.prefetch(1);
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q);
