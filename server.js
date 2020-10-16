@@ -48,7 +48,20 @@ var createContrato = function (req, res, next) {
 		if (err) {
 			next(err);
 		} else {
-			console.log('contrato', contrato)
+			let codigoUfIbge ;
+			await axios.get(`https://consulta-api.hmg.marlin.com.br/api/v1/municipios/${contrato.titular.endereco.uf}`, {
+				headers:{
+
+					'Authorization': 'Bearer _mrwY32qaEeF25TTyrWuRw==',
+					'Accept' : 'application/json',
+        			'Content-Type': 'application/json'
+				}
+			}).then((resp) => {
+				resp.data.map( data =>{
+					codigoUfIbge = data.CodigoIbge
+				})
+			})
+
 			await axios.post('https://prjqualivida.mxmwebmanager.com.br/api/InterfacedoCliente/Gravar', {
 				AutheticationToken: {
 					Username: "TESTEAPI.QUA",
@@ -85,7 +98,7 @@ var createContrato = function (req, res, next) {
 							Cidade: contrato.titular.endereco.cidade,
 							Email: contrato.titular.email,
 							Telefone: contrato.titular.numCelular,
-							CodigodaCidade: "3304557",
+							CodigodaCidade: codigoUfIbge,
 							Ativo: "A",
 							DatadoCadastro: "",
 							DatadeAtualizacao: "",
@@ -172,8 +185,10 @@ var createContrato = function (req, res, next) {
 			}).then(resp => {
 				res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
 			})
-			// res.json(contrato);
+			res.json(contrato);
 		}
+
+		
 	});
 };
 
