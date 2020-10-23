@@ -48,17 +48,15 @@ var createContrato = function (req, res, next) {
 		if (err) {
 			next(err);
 		} else {
-			let codigoUfIbge ;
-			// console.log('contrato', contrato)
-
+			let codigoUfIbge;
 			await axios.get(`https://consulta-api.hmg.marlin.com.br/api/v1/municipios/${contrato.titular.endereco.uf}`, {
-				headers:{
+				headers: {
 					'Authorization': 'Bearer _mrwY32qaEeF25TTyrWuRw==',
-					'Accept' : 'application/json',
-        			'Content-Type': 'application/json'
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
 				}
-			}).then( async (resp) => {
-				resp.data.map( data =>{
+			}).then(async (resp) => {
+				resp.data.map(data => {
 					codigoUfIbge = data.CodigoIbge
 				})
 
@@ -185,136 +183,8 @@ var createContrato = function (req, res, next) {
 				}).then(resp => {
 					res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
 				})
-				// res.json(codigoUfIbge)
 			})
-
-			// await axios.post('https://prjqualivida.mxmwebmanager.com.br/api/InterfacedoCliente/Gravar', {
-			// 	AutheticationToken: {
-			// 		Username: "TESTEAPI.QUA",
-			// 		Password: "TST90",
-			// 		EnvironmentName: "QUALIVIDAPROJ"
-			// 	},
-			// 	Data: {
-			// 		InterfacedoCliente: [
-			// 			{
-			// 				SequenciadoRegistro: 1,
-			// 				Codigo: contrato.titular.id,
-			// 				TipodePessoa: "F",
-			// 				Nome: contrato.titular.nome,
-			// 				CPFouCNPJ: contrato.titular.cpf,
-			// 				NomeFantansia: "",
-			// 				TipodoLocaldoIndicadordeInscricaoEstadual: "9",
-			// 				Inscricao: "",
-			// 				InscricaoMunicipal: "",
-			// 				InscricaoSuframa: "",
-			// 				OrgaoExpeditor: "",
-			// 				DatadaExpedicao: "",
-			// 				DatadeNascimento: dataNascimento,
-			// 				CodigodaNacionalidade: "",
-			// 				EstadoCivil: contrato.titular.estadoCivil.descricao,
-			// 				Profissao: contrato.titular.profissao.descricao,
-			// 				CodigodoGrupo: "",
-			// 				CodigodoPais: "",
-			// 				Cep: contrato.titular.endereco.cep,
-			// 				Endereco: contrato.titular.endereco.logradouro,
-			// 				NumerodoEndereco: contrato.titular.endereco.numero,
-			// 				ComplementodoEndereco: contrato.titular.endereco.complemento,
-			// 				Bairro: contrato.titular.endereco.bairro,
-			// 				Uf: contrato.titular.endereco.uf,
-			// 				Cidade: contrato.titular.endereco.cidade,
-			// 				Email: contrato.titular.email,
-			// 				Telefone: contrato.titular.numCelular,
-			// 				CodigodaCidade: codigoUfIbge,
-			// 				Ativo: "A",
-			// 				DatadoCadastro: "",
-			// 				DatadeAtualizacao: "",
-			// 				DatadeInativacao: "",
-			// 				Pais: "Brasil",
-			// 				InterfaceContaCorrentedoCliente: [
-			// 					{
-			// 						SequenciadaConta: 1,
-			// 						CodigodoCliente: contrato.titular.id,
-			// 						CodigodaContaCorrente: "001",
-			// 						CodigodoBanco: "341",
-			// 						NomedoBanco: "",
-			// 						AgenciadoBanco: "0740",
-			// 						NomedaAgencia: "",
-			// 						EnderecodaAgencia: "",
-			// 						BairrodaAgencia: "",
-			// 						CidadedaAgencia: "",
-			// 						UFdaAgencia: "",
-			// 						CepdaAgencia: "",
-			// 						NumerodaContaBancaria: "62535-9",
-			// 						TipodeConta: "",
-			// 						Competencia: "",
-			// 						OperacaodeIntegracao: ""
-			// 					}
-			// 				],
-			// 				InterfaceEnderecodoCliente: [
-			// 					{
-			// 						SequenciaClienteEndereco: "1",
-			// 						CodigoEnderecoAlternativo: "A01",
-			// 						DescricaoEnderecoAlternativo: "Endereço de cobrança",
-			// 						NomeCliente: contrato.titular.nome,
-			// 						EnderecoAlernativo: "",
-			// 						Numero: "",
-			// 						Complemento: "",
-			// 						Bairro: "",
-			// 						Cidade: "",
-			// 						UF: "RJ",
-			// 						CEP: "",
-			// 						Telefone: "",
-			// 						CNPJ: "26782341859",
-			// 						InscricaoEstadual: "",
-			// 						CodigoRegiao: "",
-			// 						Email: "",
-			// 						InscricaoMunicipal: "",
-			// 						InscricaoSUFRAMA: "",
-			// 						CodigoCidadeIBGE: "",
-			// 						CodigoPaisIBGE: "",
-			// 						TipoLocalIndicadorInscricaoEstadual: "1",
-			// 						OperacaodeIntegracao: ""
-			// 					}
-			// 				],
-			// 				InterfaceContabildoCliente: [
-			// 					{
-			// 						CodigoCliente: contrato.titular.id,
-			// 						CodigoEmpresa: "01",
-			// 						CodigoFilial: "",
-			// 						CodigoMoeda: "",
-			// 						NumeroContaContabil: "",
-			// 						NumeroContaContabilAntecipacao: "",
-			// 						OperacaodeIntegracao: "",
-			// 						InterfaceGrupoRecebimentodoCliente: [
-			// 							{
-			// 								CodigoCliente: contrato.titular.id,
-			// 								CodigoEmpresa: "01",
-			// 								CodigoFilial: "",
-			// 								CodigoMoeda: "",
-			// 								CodigoGrupoRecebimento: "310053",
-			// 								CodigoImpostoIRRF: "",
-			// 								CodigoImpostoINSS: "",
-			// 								CodigoImpostoISS: "",
-			// 								CodigoImpostoPIS: "",
-			// 								CodigoImpostoCOFINS: "",
-			// 								CodigoImpostoContribuicaoSocial: "",
-			// 								IndicadorGrupoPrincipal: "",
-			// 								IdentificadorTipoServico: "",
-			// 								CodigoAtividadeEconomica: ""
-			// 							}
-			// 						]
-			// 					}
-			// 				]
-			// 			}
-			// 		]
-			// 	}
-			// }).then(resp => {
-			// 	res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
-			// })
-			// res.json(contrato);
 		}
-
-		
 	});
 };
 
@@ -329,16 +199,17 @@ var getFindContrato = function (req, res, next) {
 
 
 
-	if (administradora || operadora || dataNascimento || nomeTitular || entidade) {
+	if (administradora || operadora || dataNascimento || nomeTitular || entidade || sobrenomeTitular) {
 
 		let primeiro = Utils.retornaCampo(1, administradora);
 		let segundo = Utils.retornaCampo(2, operadora)
 		let terceiro = Utils.retornaCampo(3, dataNascimento);
-		let quarto = Utils.retornaCampo(4, nomeTitular)
+		let quarto = Utils.retornaCampo(4, nomeTitular);
 		let quinto = Utils.retornaCampo(5, entidade);
 
 		Contrato.find({ $and: [primeiro, segundo, terceiro, quarto, quinto] })
 			.then(resp => {
+				console.log('resp: ', resp)
 				res.json(resp);
 			})
 	} else if (skip && limit) {
@@ -529,7 +400,7 @@ var getProposta = function (req, res, next) {
 };
 
 var createFornecedor = function (req, res, next) {
-		
+
 	axios.post('https://prjqualivida.mxmwebmanager.com.brapi/InterfacedoFornecedor/Gravar', {
 		AutheticationToken: {
 			Username: "TESTEAPI.QUA",
@@ -541,42 +412,42 @@ var createFornecedor = function (req, res, next) {
 				{
 					SequenciadoRegistro: data.subcontrato.id,
 					Codigo: "14270428000169",
-            		TipodePessoa: "J",
-            		CPFouCNPJ: "14270428000169",
-            		Nome: "Fornecedor Belem",
-            		NomeFantansia: "Fornecedor Belem",
-            		TipodoLocaldoIndicadordeInscricaoEstadual: "1",
-            		Inscricao: "26825520",
-            		InscricaoMunicicipal: "",
-            		InscricaoSuframa: "",
-            		FornecedorERural: "N",
-            		Cooperativa: "N",
-            		InscricaonoINSS: "",
-            		ClassenoINSS: "12",
-            		TetoMaximonoINSS: "",
-            		SalarioBase: "",
-            		PisPasep: "",
-            		QuantidadedeDependente: "0",
-            		CodigoBrasileirodeOcupacao: "",
-            		DatadeNascimento: "26051999",
-            		EstadoCivil: "C",
-            		Nacionalidade: "BRA",
-            		CodigodoPais: "BRA",
-            		Pais: "Brasil",
-            		Cep: "20040-901",
-            		Endereco: "Endereço fornecedor",
-            		NumerodoEndereco: "500",
-            		ComplementodoEndereco: "Quadra 1345",
-            		Bairro: "Centro",
-            		CodigodaCidade: "3300605",
-            		Cidade: "Rio de Janeiro",
-            		Uf: "RJ",
-            		Telefone: "99999-9999",
-            		Email: "joaoemaria@bol.en.br",
-            		Ativo: "A",
-            		Homologado: "S",
-            		InformacaoesComplementares: "N",
-            		InterfaceContaCorrentedoFornecedor: [
+					TipodePessoa: "J",
+					CPFouCNPJ: "14270428000169",
+					Nome: "Fornecedor Belem",
+					NomeFantansia: "Fornecedor Belem",
+					TipodoLocaldoIndicadordeInscricaoEstadual: "1",
+					Inscricao: "26825520",
+					InscricaoMunicicipal: "",
+					InscricaoSuframa: "",
+					FornecedorERural: "N",
+					Cooperativa: "N",
+					InscricaonoINSS: "",
+					ClassenoINSS: "12",
+					TetoMaximonoINSS: "",
+					SalarioBase: "",
+					PisPasep: "",
+					QuantidadedeDependente: "0",
+					CodigoBrasileirodeOcupacao: "",
+					DatadeNascimento: "26051999",
+					EstadoCivil: "C",
+					Nacionalidade: "BRA",
+					CodigodoPais: "BRA",
+					Pais: "Brasil",
+					Cep: "20040-901",
+					Endereco: "Endereço fornecedor",
+					NumerodoEndereco: "500",
+					ComplementodoEndereco: "Quadra 1345",
+					Bairro: "Centro",
+					CodigodaCidade: "3300605",
+					Cidade: "Rio de Janeiro",
+					Uf: "RJ",
+					Telefone: "99999-9999",
+					Email: "joaoemaria@bol.en.br",
+					Ativo: "A",
+					Homologado: "S",
+					InformacaoesComplementares: "N",
+					InterfaceContaCorrentedoFornecedor: [
 						{
 							CodigodoFornecedor: "14270428000169",
 							CodigodaContaCorrente: "012",

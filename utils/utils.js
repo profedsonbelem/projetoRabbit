@@ -1,5 +1,5 @@
 module.exports = {
-    
+
     retornaCampo: (status, CampoSelecionado) => {
         let statusConvertido = parseInt(status)
 
@@ -38,8 +38,15 @@ module.exports = {
                 break;
             case 4:
                 let nomeTitular
+                let testando = CampoSelecionado.split(' ');
+                let nome = `^${testando[0]}`;
+                let sobrenome = `${testando[1]}`;
+
+                let nomeRegex = new RegExp(nome);
+                let sobrenomeRegex = new RegExp(sobrenome);
+
                 if (CampoSelecionado)
-                    nomeTitular = { "titular.nome": CampoSelecionado }
+                    nomeTitular = { "titular.nome": { $in: [nomeRegex, sobrenomeRegex] } }
 
                 else
                     nomeTitular = {}
