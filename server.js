@@ -197,9 +197,7 @@ var getFindContrato = function (req, res, next) {
 	let skip = req.query.pagina;
 	let limit = req.query.tamanhoPagina;
 
-
-
-	if (administradora || operadora || dataNascimento || nomeTitular || entidade || sobrenomeTitular) {
+	if (administradora || operadora || dataNascimento || nomeTitular || entidade ) {
 
 		let primeiro = Utils.retornaCampo(1, administradora);
 		let segundo = Utils.retornaCampo(2, operadora)
@@ -209,7 +207,6 @@ var getFindContrato = function (req, res, next) {
 
 		Contrato.find({ $and: [primeiro, segundo, terceiro, quarto, quinto] })
 			.then(resp => {
-				console.log('resp: ', resp)
 				res.json(resp);
 			})
 	} else if (skip && limit) {

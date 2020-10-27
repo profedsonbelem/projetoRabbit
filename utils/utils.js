@@ -38,15 +38,26 @@ module.exports = {
                 break;
             case 4:
                 let nomeTitular
-                let testando = CampoSelecionado.split(' ');
-                let nome = `^${testando[0]}`;
-                let sobrenome = `${testando[1]}`;
-
+                let testando = CampoSelecionado.toLowerCase().split(' ');
+                let nome;
+                let sobrenome;
+                for (var i = 0; i < testando.length; i++) {
+                    if (i === 0) {
+                        testando[i] = testando[i][0].toUpperCase() + testando[i].slice(1);
+                        nome = `^${testando[i]}`;
+                    } else {
+                        testando[i] = testando[i][0].toUpperCase() + testando[i].slice(1);
+                        sobrenome = `${testando[i]}`;
+                    }
+                }
                 let nomeRegex = new RegExp(nome);
                 let sobrenomeRegex = new RegExp(sobrenome);
-
-                if (CampoSelecionado)
+            
+                if (CampoSelecionado){
+                    console.log('nomeRegex: ',nomeRegex)
                     nomeTitular = { "titular.nome": { $in: [nomeRegex, sobrenomeRegex] } }
+                }
+              
 
                 else
                     nomeTitular = {}
