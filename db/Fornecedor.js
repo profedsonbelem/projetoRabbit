@@ -3,8 +3,6 @@ const moment = require('moment');
 
 
 const schema = mongoose.Schema({
-    
-   
     id: {
         "type": "number"
     },
@@ -35,12 +33,6 @@ const schema = mongoose.Schema({
     
 
 },{ collection: 'fornecedores' });
-
-schema.pre('save', function (next) {
-    console.log('passei')
-    next();
-  
-  })
 
 const Fornecedor = mongoose.model('fornecedores', schema);
 module.exports = Fornecedor;

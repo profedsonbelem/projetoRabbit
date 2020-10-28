@@ -14,6 +14,7 @@ const moment = require('moment');
 const Utils = require("./utils/utils");
 const Fornecedor = require("./db/Fornecedor");
 const { db } = require("./db/Contrato");
+const { Db } = require("mongodb");
 var CronJob = require('cron').CronJob;
 
 
@@ -52,11 +53,11 @@ var createContrato = function (req, res, next) {
 		} else {
 
 			let fornecedor = new Fornecedor(cliente.corretora)
-			fornecedor.save((err,forne) =>{
-					console.log('forneceodr', forne)
+			fornecedor.save((err, forne) => {
+				console.log('forneceodr', forne)
 			})
-			//console.log('data.corretora', cliente.corretora)
-			console
+
+
 			let codigoUfIbge;
 			await axios.get(`https://consulta-api.hmg.marlin.com.br/api/v1/municipios/${contrato.titular.endereco.uf}`, {
 				headers: {
@@ -191,8 +192,6 @@ var createContrato = function (req, res, next) {
 				}).then(resp => {
 					res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
 				})
-
-			
 			})
 		}
 	});
@@ -207,7 +206,7 @@ var getFindContrato = function (req, res, next) {
 	let skip = req.query.pagina;
 	let limit = req.query.tamanhoPagina;
 
-	if (administradora || operadora || dataNascimento || nomeTitular || entidade ) {
+	if (administradora || operadora || dataNascimento || nomeTitular || entidade) {
 
 		let primeiro = Utils.retornaCampo(1, administradora);
 		let segundo = Utils.retornaCampo(2, operadora)
@@ -542,157 +541,156 @@ var createFornecedor = function (req, res, next) {
 		res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
 	})
 };
-//joao
-var createFornecedor = function (req, res) {
-	let id = req.params.idFornecedor;
-	Fornecedor.findById({id: id}).then(data =>{
-		axios.post('https://prjqualivida.mxmwebmanager.com.brapi/InterfacedoFornecedor/Gravar', {
-			AutheticationToken: {
-				Username: "TESTEAPI.QUA",
-				Password: "TST90",
-				EnvironmentName: "QUALIVIDAPROJ"
-			},
-			Data: {
-				InterfacedoFornecedor: [
-					{
-						SequenciadoRegistro: data.id,
-						Codigo: "14270428000169",
-						TipodePessoa: "J",
-						CPFouCNPJ: "14270428000169",
-						Nome: "Fornecedor Belem",
-						NomeFantansia: "Fornecedor Belem",
-						TipodoLocaldoIndicadordeInscricaoEstadual: "1",
-						Inscricao: "26825520",
-						InscricaoMunicicipal: "",
-						InscricaoSuframa: "",
-						FornecedorERural: "N",
-						Cooperativa: "N",
-						InscricaonoINSS: "",
-						ClassenoINSS: "12",
-						TetoMaximonoINSS: "",
-						SalarioBase: "",
-						PisPasep: "",
-						QuantidadedeDependente: "0",
-						CodigoBrasileirodeOcupacao: "",
-						DatadeNascimento: "26051999",
-						EstadoCivil: "C",
-						Nacionalidade: "BRA",
-						CodigodoPais: "BRA",
-						Pais: "Brasil",
-						Cep: "20040-901",
-						Endereco: "Endereço fornecedor",
-						NumerodoEndereco: "500",
-						ComplementodoEndereco: "Quadra 1345",
-						Bairro: "Centro",
-						CodigodaCidade: "3300605",
-						Cidade: "Rio de Janeiro",
-						Uf: "RJ",
-						Telefone: "99999-9999",
-						Email: "joaoemaria@bol.en.br",
-						Ativo: "A",
-						Homologado: "S",
-						InformacaoesComplementares: "N",
-						InterfaceContaCorrentedoFornecedor: [
-							{
-								CodigodoFornecedor: "14270428000169",
-								CodigodaContaCorrente: "012",
-								CodigodoBanco: "341",
-								NomedoBanco: "itau",
-								AgenciadoBanco: "0740",
-								NomedaAgencia: "Tutoia",
-								EnderecodaAgencia: "Rua Tutoia, 300",
-								BairrodaAgencia: "Paraiso",
-								CidadedaAgencia: "Sao Paulo",
-								UFdaAgencia: "SP",
-								CepdaAgencia: "04311-080",
-								NumerodaContaBancaria: "62533-9",
-								TipodeConta: "C",
-								StatusdaConta: "A",
-								IndicadordeContaPrincipal: "S"
-							}
-						],
-						InterfaceFornecedorContabil: [
-							{
-								SequenciadoFornecedorContabil: 1,
-								CodigoFornecedor: "14270428000169",
-								CodigoEmpresa: "001",
-								CodigoFilial: "00",
-								CodigoMoeda: "BRL",
-								NumeroContaContabil: "",
-								NumeroContaContabilAntecipacao: "",
-								InterfacedoFornecedorGrupoPagamento: [
-									{
-										SequenciadoFornecedorGrupoPagamento: "1",
-										CodigoFornecedor: "14270428000169",
-										CodigoEmpresa: "001",
-										CodigoFilial: "00",
-										CodigoMoeda: "BRL",
-										CodigoGrupoPagamento: "201.2",
-										CodigoImpostoIR: "",
-										CodigoImpostoINSS: "",
-										CodigoImpostoISS: "",
-										CodigoImpostoPIS: "",
-										CodigoImpostoCOFINS: "",
-										CodigoImpostoContribuicaoSocial: "",
-										CodigoImpostoINSSI: "",
-										CodigoImpostoSEST: "",
-										IdentificadorTipoServico: "1",
-										CodigoAtividadeEconomica: "2"
-									}
-								]
-							}
-						],
-						InterfaceFornecedorBeneficiario: [
-							{
-								CodigodoFornecedor: "14270428000169",
-								CodigodoBeneficiario: "95318356087",
-								CodigodoTipodeRelacionamento: "3"
-							}
-						],
-						InterfaceFornecedorHistorico: [
-							{
-								CodigodoFornecedor: "14270428000169",
-								DatadaOcorrencia: "10/10/19",
-								Historico: "Teste de Historico de fornecedor",
-								TipoOcorrencia: "01"
-							}
-						],
-						InterfaceFornecedorInformacoesComplementares: [
-							{
-								InscricaoEstadualdoParticipante: "",
-								InscricaonoINSSdoParticipante: "",
-								NumerodeIdentificacaodoTrabalhador: "",
-								NumerodaNaturezadaRetencao: "",
-								CodigoTipodeAssinante: "",
-								ClassificacaonoSimplesNacional: "",
-								TipodoClienteServicodeComunicacao: "",
-								TipodePessoaEstrangeira: "",
-								NIFFornecedorEstrangeiro: "",
-								BeneficiarodeRendimentonoExterior: "",
-								BeneficiarioDispensadodoNIF: "",
-								PaisNaoExigeNIF: ""
-							}
-						]
-					}
-				]
-			}
-		}).then(resp => {
-			res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
-		})
+var getFornecedor = function (req, res, next) {
+	console.log('passei')
+	Fornecedor.find().then(resp => {
+		console.log('resp: ', resp)
+		res.json(resp);
 	})
-	
-
 }
-var putFornecedor = function (req, res) {
-	let id = req.params.idFornecedor;
-	//Fornecedor.updateOne({idFornecedor: idFornecedor, db});
-	db.mensage.updateOne({_id:ObjectId("5f89e7c90a6e343ac41db05e")},{$set:{"titular.nome":"Pedro"}},{$set:{}},{$set:{}})
 
 
-	
-}	
+//joao
+// var createFornecedor = function (req, res) {
+// 	let id = req.params.idFornecedor;
+// 	Fornecedor.findById({ id: id }).then(data => {
+// 		axios.post('https://prjqualivida.mxmwebmanager.com.brapi/InterfacedoFornecedor/Gravar', {
+// 			AutheticationToken: {
+// 				Username: "TESTEAPI.QUA",
+// 				Password: "TST90",
+// 				EnvironmentName: "QUALIVIDAPROJ"
+// 			},
+// 			Data: {
+// 				InterfacedoFornecedor: [
+// 					{
+// 						SequenciadoRegistro: data.id,
+// 						Codigo: "14270428000169",
+// 						TipodePessoa: "J",
+// 						CPFouCNPJ: "14270428000169",
+// 						Nome: "Fornecedor Belem",
+// 						NomeFantansia: "Fornecedor Belem",
+// 						TipodoLocaldoIndicadordeInscricaoEstadual: "1",
+// 						Inscricao: "26825520",
+// 						InscricaoMunicicipal: "",
+// 						InscricaoSuframa: "",
+// 						FornecedorERural: "N",
+// 						Cooperativa: "N",
+// 						InscricaonoINSS: "",
+// 						ClassenoINSS: "12",
+// 						TetoMaximonoINSS: "",
+// 						SalarioBase: "",
+// 						PisPasep: "",
+// 						QuantidadedeDependente: "0",
+// 						CodigoBrasileirodeOcupacao: "",
+// 						DatadeNascimento: "26051999",
+// 						EstadoCivil: "C",
+// 						Nacionalidade: "BRA",
+// 						CodigodoPais: "BRA",
+// 						Pais: "Brasil",
+// 						Cep: "20040-901",
+// 						Endereco: "Endereço fornecedor",
+// 						NumerodoEndereco: "500",
+// 						ComplementodoEndereco: "Quadra 1345",
+// 						Bairro: "Centro",
+// 						CodigodaCidade: "3300605",
+// 						Cidade: "Rio de Janeiro",
+// 						Uf: "RJ",
+// 						Telefone: "99999-9999",
+// 						Email: "joaoemaria@bol.en.br",
+// 						Ativo: "A",
+// 						Homologado: "S",
+// 						InformacaoesComplementares: "N",
+// 						InterfaceContaCorrentedoFornecedor: [
+// 							{
+// 								CodigodoFornecedor: "14270428000169",
+// 								CodigodaContaCorrente: "012",
+// 								CodigodoBanco: "341",
+// 								NomedoBanco: "itau",
+// 								AgenciadoBanco: "0740",
+// 								NomedaAgencia: "Tutoia",
+// 								EnderecodaAgencia: "Rua Tutoia, 300",
+// 								BairrodaAgencia: "Paraiso",
+// 								CidadedaAgencia: "Sao Paulo",
+// 								UFdaAgencia: "SP",
+// 								CepdaAgencia: "04311-080",
+// 								NumerodaContaBancaria: "62533-9",
+// 								TipodeConta: "C",
+// 								StatusdaConta: "A",
+// 								IndicadordeContaPrincipal: "S"
+// 							}
+// 						],
+// 						InterfaceFornecedorContabil: [
+// 							{
+// 								SequenciadoFornecedorContabil: 1,
+// 								CodigoFornecedor: "14270428000169",
+// 								CodigoEmpresa: "001",
+// 								CodigoFilial: "00",
+// 								CodigoMoeda: "BRL",
+// 								NumeroContaContabil: "",
+// 								NumeroContaContabilAntecipacao: "",
+// 								InterfacedoFornecedorGrupoPagamento: [
+// 									{
+// 										SequenciadoFornecedorGrupoPagamento: "1",
+// 										CodigoFornecedor: "14270428000169",
+// 										CodigoEmpresa: "001",
+// 										CodigoFilial: "00",
+// 										CodigoMoeda: "BRL",
+// 										CodigoGrupoPagamento: "201.2",
+// 										CodigoImpostoIR: "",
+// 										CodigoImpostoINSS: "",
+// 										CodigoImpostoISS: "",
+// 										CodigoImpostoPIS: "",
+// 										CodigoImpostoCOFINS: "",
+// 										CodigoImpostoContribuicaoSocial: "",
+// 										CodigoImpostoINSSI: "",
+// 										CodigoImpostoSEST: "",
+// 										IdentificadorTipoServico: "1",
+// 										CodigoAtividadeEconomica: "2"
+// 									}
+// 								]
+// 							}
+// 						],
+// 						InterfaceFornecedorBeneficiario: [
+// 							{
+// 								CodigodoFornecedor: "14270428000169",
+// 								CodigodoBeneficiario: "95318356087",
+// 								CodigodoTipodeRelacionamento: "3"
+// 							}
+// 						],
+// 						InterfaceFornecedorHistorico: [
+// 							{
+// 								CodigodoFornecedor: "14270428000169",
+// 								DatadaOcorrencia: "10/10/19",
+// 								Historico: "Teste de Historico de fornecedor",
+// 								TipoOcorrencia: "01"
+// 							}
+// 						],
+// 						InterfaceFornecedorInformacoesComplementares: [
+// 							{
+// 								InscricaoEstadualdoParticipante: "",
+// 								InscricaonoINSSdoParticipante: "",
+// 								NumerodeIdentificacaodoTrabalhador: "",
+// 								NumerodaNaturezadaRetencao: "",
+// 								CodigoTipodeAssinante: "",
+// 								ClassificacaonoSimplesNacional: "",
+// 								TipodoClienteServicodeComunicacao: "",
+// 								TipodePessoaEstrangeira: "",
+// 								NIFFornecedorEstrangeiro: "",
+// 								BeneficiarodeRendimentonoExterior: "",
+// 								BeneficiarioDispensadodoNIF: "",
+// 								PaisNaoExigeNIF: ""
+// 							}
+// 						]
+// 					}
+// 				]
+// 			}
+// 		}).then(resp => {
+// 			res.json({ "resposta Servidor MXM": resp.data.Messages[0], "Dados Enviados": JSON.parse(resp.config.data), "Processo :": resp.data.Data });
+// 		})
+// 	})
 
 
+// }
 
 
 
@@ -716,12 +714,11 @@ router.route('/contrato_beneficiario/:cpf/cpf')
 router.route('/contrato_beneficiario/:proposta/proposta')
 	.get(getProposta);
 
-
 router.route('/contrato_beneficiario/:carteirinha/carteirinha')
 	.get(getCarteirinha);
 
-router.route('/contrato_beneficiario/:idFornecedor/fornecedor')
-	.post(createFornecedor);
+router.route('/contrato_beneficiario/fornecedores')
+	.get(getFornecedor);
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
